@@ -5,6 +5,6 @@ Fully autonomous coin collecting robot which stays in the confinement of a perim
 Other firmware contributors: Yousof Al Autman (motor control functions and buzzer)
 
 <p align="center">
-   <br><br>
+   <br>
    <img src="coinRobot.jpg" width="400">
 </p>
