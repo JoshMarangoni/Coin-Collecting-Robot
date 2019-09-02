@@ -1,5 +1,4 @@
 #pragma once
-#include "variables.h"
 
 //constants used for defining coin picking arm servo motor positions
 #define VERTICAL_DOWN 178
@@ -26,7 +25,7 @@
 #define AIR_F 46296.292969
 
 //coin collecting functions
-int detectCoin(float f, Frequencies *F);
-void pick_up_coin(varISR *V);
+int detectCoin(float f);
+void pick_up_coin();
 long int GetPeriod(int n);
 float getFrequency();

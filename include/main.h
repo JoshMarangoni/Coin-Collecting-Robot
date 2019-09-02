@@ -16,12 +16,7 @@
 #define Baud2BRG(desired_baud) ((SYSCLK / (16 * desired_baud)) - 1)
 
 //non-blocking delay function
-void delay_ms(int msecs, varISR* V);
+void delay_ms(int msecs);
 
 //manual mode robot control
 void manual(int direction);
-
-//global pointers
-varISR* V;
-coinCounters* C;
-Frequencies* F;

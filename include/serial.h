@@ -18,9 +18,6 @@
  *
  * Note that when a carriage return '\r' is received, a nul character
  *  is appended signifying the strings end
- *
- * Inputs:  *buffer = Character array/pointer to store received data into, (NOT ANYMORE)
- *          max_size = number of bytes allocated to this pointer, (NOT ANYMORE)
- * Outputs: Number of characters received (NOT ANYMORE)*/
+ */
 
 int SerialReceive();

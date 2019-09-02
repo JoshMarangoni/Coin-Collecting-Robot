@@ -14,17 +14,21 @@
 #include "variables.h"
 #include "sysclk.h"
 
+//struct DEFINITIONS
+varISR V = {0,0,0,0,500,0};
+coinCounters C = {0,0.0};
+Frequencies F = {0,0.0};
 
 // The Interrupt Service Routine for timer 1 is used to generate one or more standard
 // hobby servo signals.  The servo signal has a fixed period of 20ms and a pulse width
 // between 0.6ms and 2.4ms.
-void __ISR(_TIMER_1_VECTOR, IPL5SOFT) Timer1_Handler(varISR *V)
+void __ISR(_TIMER_1_VECTOR, IPL5SOFT) Timer1_Handler()
 {
 	IFS0CLR = _IFS0_T1IF_MASK; // Clear timer 1 interrupt flag, bit 4 of IFS0
 
-	V->ISR_cnt++;
+	V.ISR_cnt++;
 
-	if (V->ISR_cnt < V->ISR_pw_v)
+	if (V.ISR_cnt < V.ISR_pw_v)
 	{
 		servo1 = 1; //vertical
 	}
@@ -33,7 +37,7 @@ void __ISR(_TIMER_1_VECTOR, IPL5SOFT) Timer1_Handler(varISR *V)
 		servo1 = 0;
 	}
 
-	if (V->ISR_cnt < V->ISR_pw_h)
+	if (V.ISR_cnt < V.ISR_pw_h)
 	{
 		servo2 = 1; //horizontal
 	}
@@ -42,21 +46,21 @@ void __ISR(_TIMER_1_VECTOR, IPL5SOFT) Timer1_Handler(varISR *V)
 		servo2 = 0;
 	}
 
-	if (V->ISR_cnt >= 2000)
+	if (V.ISR_cnt >= 2000)
 	{
-		V->ISR_cnt = 0; // 2000 * 10us=20ms
-		V->ISR_frc++;
+		V.ISR_cnt = 0; // 2000 * 10us=20ms
+		V.ISR_frc++;
 	}
 }
 
 //ISR for buzzer
-void __ISR(_TIMER_4_VECTOR, IPL5SOFT) Timer4_Handler(varISR *V)
+void __ISR(_TIMER_4_VECTOR, IPL5SOFT) Timer4_Handler()
 {
 	IFS0CLR = _IFS0_T4IF_MASK; // Clear timer 1 interrupt flag, bit 4 of IFS0
 
-	V->ISR_cnt_buzz++;
+	V.ISR_cnt_buzz++;
 
-	if (V->ISR_cnt_buzz < V->ISR_pw_buzz)
+	if (V.ISR_cnt_buzz < V.ISR_pw_buzz)
 	{
 		buzzer = 1;
 	}
@@ -65,9 +69,9 @@ void __ISR(_TIMER_4_VECTOR, IPL5SOFT) Timer4_Handler(varISR *V)
 		buzzer = 0;
 	}
 
-	if (V->ISR_cnt_buzz >= F->freq_change)
+	if (V.ISR_cnt_buzz >= F.freq_change)
 	{
-		V->ISR_cnt_buzz = 0; // 2000 * 10us=20ms
+		V.ISR_cnt_buzz = 0; // 2000 * 10us=20ms
 	}
 }
 
@@ -133,12 +137,12 @@ void ADCConf(void)
 	AD1CON1SET = 0x8000; // Enable ADC
 }
 
-void delay_ms(int msecs, varISR *V)
+void delay_ms(int msecs)
 {
 	int ticks;
-	V->ISR_frc = 0;
+	V.ISR_frc = 0;
 	ticks = msecs / 20;
-	while (V->ISR_frc < ticks)
+	while (V.ISR_frc < ticks)
 		;
 }
 
@@ -166,25 +170,15 @@ void manual(int direction){
 		}
 		case COLLECT_COIN:{
 			off();
-			pick_up_coin(V);
+			pick_up_coin();
 			break;
 		}
 	}
 }
 
 void main(void)
-{
-	V = (varISR*)malloc(sizeof(varISR));
-	V->ISR_cnt = 0;
-	V->ISR_frc = 0;
-	V->ISR_pw_buzz = 500;
-	V->ISR_cnt_buzz = 0;
+{	
 
-	C = (coinCounters*)malloc(sizeof(coinCounters));
-	C->coin_counter = 0;
-	C->myWallet = 0;
-
-	F = (Frequencies*)malloc(sizeof(Frequencies));
 
 	DDPCON = 0;
 	float f;
@@ -230,7 +224,7 @@ void main(void)
 	CNPUB |= (1 << 5);		// Enable pull-up resistor for RB5
 	UART2Configure(115200); // Configure UART2 for a baud rate of 115200
 
-	delay_ms(2000, V);
+	delay_ms(2000);
 	//F->air_freq = getFrequency(SYSCLK);
 
 	while (1)
@@ -242,13 +236,13 @@ void main(void)
 			T4CONbits.TON=0;
 			f = getFrequency(SYSCLK);
 
-			if(detectCoin(f, F)==1) {
+			if(detectCoin(f)==1) {
 				reverse_fast();      
-				delay_ms(200, V);
+				delay_ms(200);
 				off();   
-				delay_ms(20, V);
-				pick_up_coin(V);
-				playTune(V);
+				delay_ms(20);
+				pick_up_coin();
+				playTune();
 				coin_counter++;
 			}
 
@@ -258,9 +252,9 @@ void main(void)
 
 			if(detectPerimeter()==1) {
 				reverse_fast();
-				delay_ms(700, V);
+				delay_ms(700);
 				rotateCCW_fast();
-				delay_ms(500, V);
+				delay_ms(500);
 			}
 		}		
 
