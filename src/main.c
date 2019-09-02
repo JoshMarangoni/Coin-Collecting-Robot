@@ -178,8 +178,6 @@ void manual(int direction){
 
 void main(void)
 {	
-
-
 	DDPCON = 0;
 	float f;
 	int command = 0; //command from serial
