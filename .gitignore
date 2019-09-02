@@ -3,6 +3,5 @@
 *.map
 *.o
 *.exe
-*.mk
 *.d
 *.inc
