@@ -6,3 +6,6 @@ Fully autonomous coin collecting robot which stays in the confinement of a perim
    <br>
    <img src="coinRobot.jpg" width="400">
 </p>
+
+Other Contributors:
+Yousof Al-Autman: motor.c
