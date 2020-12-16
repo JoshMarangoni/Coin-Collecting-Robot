@@ -10,4 +10,4 @@ Fully autonomous coin collecting robot which stays in the confinement of a perim
 Other Contributors:
 * Yousof Al-Autman: motor.c, tune.c
 * Justin Scott: perimeter.c
-* Dr. Jesús Calviño-Fraga (lecture slides): period.c
+* Dr. Jesús Calviño-Fraga (lecture slides): period.c, frequency.c
